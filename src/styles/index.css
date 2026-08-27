@@ -1,0 +1,114 @@
+@import "tailwindcss";
+
+@theme {
+  /* EduFlow / Lumina Academy design system — M3-style semantic color roles */
+  --color-success-green: #00b14f;
+  --color-warning-gold: #efbb03;
+  --color-slate-dark: #181b26;
+
+  --color-primary: #006e2e;
+  --color-primary-container: #00b14f;
+  --color-on-primary: #ffffff;
+  --color-on-primary-container: #003a15;
+  --color-primary-fixed: #71fe91;
+  --color-primary-fixed-dim: #52e078;
+  --color-on-primary-fixed: #002109;
+  --color-on-primary-fixed-variant: #005321;
+  --color-inverse-primary: #52e078;
+  --color-surface-tint: #006e2e;
+
+  --color-secondary: #5a5e6a;
+  --color-on-secondary: #ffffff;
+  --color-secondary-container: #dcdfee;
+  --color-on-secondary-container: #5f626f;
+  --color-secondary-fixed: #dfe2f0;
+  --color-secondary-fixed-dim: #c3c6d4;
+  --color-on-secondary-fixed: #171b26;
+  --color-on-secondary-fixed-variant: #434752;
+
+  --color-tertiary: #7b5800;
+  --color-on-tertiary: #ffffff;
+  --color-tertiary-container: #c49117;
+  --color-on-tertiary-container: #422e00;
+  --color-tertiary-fixed: #ffdea5;
+  --color-tertiary-fixed-dim: #f6bd45;
+  --color-on-tertiary-fixed: #261900;
+  --color-on-tertiary-fixed-variant: #5d4200;
+
+  --color-error: #ba1a1a;
+  --color-on-error: #ffffff;
+  --color-error-container: #ffdad6;
+  --color-on-error-container: #93000a;
+
+  --color-background: #f8f9fb;
+  --color-on-background: #191c1e;
+  --color-surface: #f8f9fb;
+  --color-surface-white: #ffffff;
+  --color-surface-dim: #d8dadc;
+  --color-surface-bright: #f8f9fb;
+  --color-surface-container-lowest: #ffffff;
+  --color-surface-container-low: #f2f4f6;
+  --color-surface-container: #eceef0;
+  --color-surface-container-high: #e6e8ea;
+  --color-surface-container-highest: #e0e3e5;
+  --color-surface-variant: #e0e3e5;
+  --color-on-surface: #191c1e;
+  --color-on-surface-variant: #3d4a3d;
+  --color-inverse-surface: #2d3133;
+  --color-inverse-on-surface: #eff1f3;
+  --color-outline: #6d7b6c;
+  --color-outline-variant: #bccbb9;
+
+  --font-display: 'DM Sans', ui-sans-serif, system-ui, sans-serif;
+  --font-sans: 'Inter', ui-sans-serif, system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, monospace;
+
+  --spacing-max-width: 1280px;
+  --spacing-gutter: 24px;
+  --spacing-margin-mobile: 16px;
+  --spacing-margin-desktop: 48px;
+}
+
+html, body, #root {
+  height: 100%;
+}
+
+body {
+  background-color: var(--color-background);
+  color: var(--color-on-surface);
+  font-family: var(--font-sans);
+}
+
+.shadow-ambient {
+  box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.04);
+}
+
+.material-symbols-outlined {
+  font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+}
+.material-symbols-outlined.fill {
+  font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background-color: var(--color-outline-variant);
+  border-radius: 8px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background-color: var(--color-outline);
+}
+
+@keyframes pulse-danger {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.55; }
+}
+.animate-pulse-danger {
+  animation: pulse-danger 1s ease-in-out infinite;
+}
