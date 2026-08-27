@@ -1,4 +1,4 @@
-import { createBrowserRouter } from 'react-router-dom';
+import { createHashRouter } from 'react-router-dom';
 import { LoginPage } from './pages/LoginPage';
 import { DashboardPage } from './pages/DashboardPage';
 import { CoursePage } from './pages/CoursePage';
@@ -12,7 +12,7 @@ import { QuizPreviewPage } from './pages/QuizPreviewPage';
 import { NotFoundPage } from './pages/NotFoundPage';
 import { ProtectedRoute } from './components/layout/ProtectedRoute';
 
-export const router = createBrowserRouter([
+export const router = createHashRouter([
   { path: '/login', element: <LoginPage /> },
   {
     path: '/',
