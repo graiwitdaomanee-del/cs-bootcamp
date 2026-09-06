@@ -86,14 +86,14 @@ monitors the cohort. Seeded account: Phin.
 4. Open an available lesson → the lesson player opens and the lesson is marked `in-progress`.
 5. Work through steps one at a time. Each step: read the prompt/scenario on the left, answer on the right, submit, see feedback (correct/incorrect + explanation, or a model answer to compare against). The Knowledge Hub panel shows reference entries unlocked by this and earlier lessons.
 6. After the last step, the **role-play quiz** loads: a fresh, shuffled set of questions drawn from every quiz that shares a tag with the lesson, biased toward harder cross-lesson questions.
-7. Score ≥ 70% → lesson becomes `completed`, XP is awarded, a completion modal shows newly unlocked Knowledge Hub entries and a link to the next lesson.
-8. Score < 70% → retry with a brand-new question set. Unlimited attempts.
+7. Every question correct → lesson becomes `completed`, XP is awarded, a completion modal shows newly unlocked Knowledge Hub entries and a link to the next lesson.
+8. Any question wrong → retry with a brand-new random 2–3 question set. Unlimited attempts.
 9. Revisiting a completed lesson opens a **review** mode: step through past answers and the correct answers, with an option to retake the quiz.
 
 ### 5.2 Admin authors and publishes a lesson
 1. Log in as Phin → admin dashboard (authoring tools + cohort table).
 2. Create or open a course; optionally upload a logo image and set status `active`/`wip`.
-3. Add a lesson: title, summary, description blocks, tags, difficulty, XP reward, estimated minutes, prerequisite lesson, quiz question count.
+3. Add a lesson: title, summary, description blocks, tags, difficulty, XP reward, estimated minutes, prerequisite lesson. (Quiz size is fixed system-wide at 2–3 random questions.)
 4. Add steps of any supported type; for choice steps, edit options and mark the correct one(s); optionally attach a media placeholder and a per-step countdown.
 5. Reorder lessons and steps by dragging.
 6. Keep it `hidden` while drafting (trainees can't see it; admins can preview it); unhide to publish.
@@ -144,16 +144,17 @@ auto-submits on expiry).
 - **FR-23** `salesforce-mock-timed` — a scenario, a set of mock merchant accounts, and priority/case-type option lists; trainee picks account + priority + case type and writes subject/description, typically against a countdown; on submit compare against the `idealCase`. Not auto-graded.
 
 ### 6.5 Quiz gate
-- **FR-24** The quiz for a lesson is assembled at runtime by `buildQuizForLesson`:
-  - Consider every non-hidden quiz whose `tags` intersect the lesson's `tags`.
-  - Flatten their questions; annotate each with the set of lessons across the app that currently share a tag with its owning quiz.
-  - Prefer questions whose annotation spans **more than one lesson** ("รวมความรู้หลายบทเรียน" / cross-lesson), then fill the remainder with single-lesson questions.
-  - Take `min(lesson.quizConfig.questionCount, candidatesAvailable)`, shuffled.
+- **FR-24** The quiz for a lesson is assembled at runtime by `buildQuizForLesson(lesson, quizzes, completedLessons)`:
+  - `completedLessons` = every lesson **this trainee has passed** (derived from progress, never shown to the trainee). The "knowledge set" for the draw is those lessons plus the one just finished.
+  - Consider every non-hidden quiz whose `tags` intersect any tag in that knowledge set.
+  - Flatten their questions; annotate each with which lessons **in the knowledge set** its owning quiz spans.
+  - Draw cross-lesson questions (owning quiz spans **more than one** known lesson — "รวมความรู้หลายบทเรียน") first, then top up with single-lesson ones.
+  - Take **2 or 3** questions, the count chosen at random each attempt (capped by candidates available), then shuffle. Every call re-draws — no two attempts are the same set.
 - **FR-25** Questions are presented one at a time using the same UI as the lesson player, including the Knowledge Hub panel.
 - **FR-26** Scoring (`scoreQuizAnswers`): `single-choice` exact match; `multi-choice` exact-set match; all other types count as correct (self-assessed). Score = correct / total.
-- **FR-27** Pass threshold is **70%** (`PASS_THRESHOLD = 0.7`).
+- **FR-27** Pass requires **every gradeable question correct** (`PASS_THRESHOLD = 1`) — on a 2–3 question set, 70% would be meaningless. Non-choice questions always count correct, so in practice: every choice question in the drawn set must be right.
 - **FR-28** On pass: append a `QuizAttemptRecord` (passed), set lesson `completed` + `completedAt`, add `lesson.xpReward` to the user's XP.
-- **FR-29** On fail: append a `QuizAttemptRecord` (not passed), lesson stays `in-progress`, offer a retry that rebuilds a fresh question set. No attempt limit.
+- **FR-29** On fail: append a `QuizAttemptRecord` (not passed), lesson stays `in-progress`, offer a retry that re-draws a fresh 2–3 question set. No attempt limit.
 - **FR-30** Every attempt records the question IDs shown, the answers given, the score, and the pass/fail result.
 
 ### 6.6 Knowledge Hub & AI tutor
@@ -174,7 +175,7 @@ The bottom-left panel of the lesson player and quiz runner is a two-tab panel:
 
 ### 6.7 Admin — authoring
 - **FR-34** Courses: create, edit (slug, title, short name, description, emoji icon, logo image, status, order), delete. Deleting a course also deletes its lessons.
-- **FR-35** Lessons: create, edit every field (title, slug, summary, description blocks, tags, difficulty, hidden flag, placeholder flag, prerequisite, steps, quiz question count, XP reward, estimated minutes), delete. `createdAt`/`updatedAt` maintained automatically.
+- **FR-35** Lessons: create, edit every field (title, slug, summary, description blocks, tags, difficulty, hidden flag, placeholder flag, prerequisite, steps, XP reward, estimated minutes), delete. `createdAt`/`updatedAt` maintained automatically.
 - **FR-36** Steps: add/edit/remove any step type via type-specific editors, laid out as labeled field groups (โจทย์ / ตัวเลือกคำตอบ / สิ่งที่แสดงหลังตอบ / สื่อประกอบ / จับเวลา); edit choice options and correct answers inline. Changing a step's type is guarded by an inline confirm when the step already has content.
 - **FR-36a** Each step editor surfaces a "N จุดที่ต้องแก้" chip listing what makes the step incomplete (`getStepIssues` in `src/utils/stepValidation.ts`). On save, a lesson or quiz with any incomplete step is blocked by an inline error panel that lists every issue by step number — the editor never silently saves a broken step.
 - **FR-37** Quizzes: create, edit (title, tags, questions), toggle hidden, delete.
@@ -198,7 +199,7 @@ Account        id, name, email, role (admin|trainee), title, avatarColor
 Course         id, slug, title, shortName, description, icon, logoUrl?, status (active|wip), order
 Lesson         id, courseId, order, title, slug, summary, descriptionBlocks[],
                tags[], difficulty (easy|medium|hard), isHidden, isPlaceholder,
-               prerequisiteLessonId, steps[], quizConfig.questionCount,
+               prerequisiteLessonId, steps[],
                xpReward, estimatedMinutes, createdAt, updatedAt
 LessonStep     info | free-text | single-choice | multi-choice |
                salesforce-mock-timed | live-chat-mock | phone-call-mock
@@ -217,11 +218,13 @@ AppData        version, accounts[], courses[], lessons[], knowledgeHubEntries[],
 
 - **BR-1 Lesson access** — `completed`/`in-progress` status is sticky. Otherwise: no
   prerequisite ⇒ `available`; prerequisite `completed` ⇒ `available`; else `locked`.
-- **BR-2 Quiz eligibility** — tag intersection between quiz and lesson. No hand-picked
-  lesson IDs; "current / past / multi-lesson" coverage falls out of how the quiz is tagged.
+- **BR-2 Quiz eligibility** — a question is eligible when its owning quiz shares a tag with
+  the current lesson **or with any lesson the trainee has passed**. No hand-picked lesson
+  IDs; per-trainee scope falls out of which lessons they've completed and how quizzes are tagged.
 - **BR-3 Question difficulty bias** — cross-lesson questions (owning quiz shares tags with
-  >1 lesson) are drawn before single-lesson ones.
-- **BR-4 Pass** — score ≥ 0.70 on the assembled quiz.
+  >1 lesson *in the trainee's knowledge set*) are drawn before single-lesson ones.
+- **BR-4 Pass** — every gradeable question in the drawn 2–3 question set is correct
+  (`PASS_THRESHOLD = 1`).
 - **BR-5 Scoring** — only choice questions can be wrong; free-text/chat/phone/Salesforce
   are always scored correct.
 - **BR-6 XP & level** — XP increases only by `lesson.xpReward` on a passing attempt;

@@ -3,33 +3,45 @@ import type { Quiz, RuntimeQuizQuestion } from '../types/quiz';
 import { shuffle } from './shuffle';
 
 /**
- * A quiz is eligible for a lesson when they share at least one tag — this naturally covers
- * "current lesson", "past lesson", or "multiple lessons" depending on how the quiz is tagged,
- * without the admin having to hand-pick lesson IDs.
+ * Assembles a fresh 2–3 question quiz for the lesson the trainee just finished.
+ *
+ * The candidate pool is scoped to the trainee's *unlocked knowledge*: quizzes whose tags
+ * intersect the tags of the current lesson OR any lesson this trainee has already passed.
+ * `completedLessons` carries that per-trainee set (derived from progress, never shown to
+ * the trainee). A question is treated as "cross-lesson" — and drawn first — when its owning
+ * quiz spans more than one of those known lessons, so later attempts naturally mix material.
+ * The set is re-drawn and re-shuffled on every call, so no two attempts look the same.
  */
 export function buildQuizForLesson(
   lesson: Lesson,
   quizzes: Quiz[],
-  allLessons: Lesson[],
+  completedLessons: Lesson[],
 ): RuntimeQuizQuestion[] {
+  const knowledgeLessons = [lesson, ...completedLessons.filter((l) => l.id !== lesson.id)];
+  const knowledgeTags = new Set(knowledgeLessons.flatMap((l) => l.tags));
+
   const applicableQuizzes = quizzes.filter(
-    (quiz) => !quiz.isHidden && quiz.tags.some((tag) => lesson.tags.includes(tag)),
+    (quiz) => !quiz.isHidden && quiz.tags.some((tag) => knowledgeTags.has(tag)),
   );
 
-  const candidates: RuntimeQuizQuestion[] = applicableQuizzes.flatMap((quiz) => {
-    // Which lessons (across the whole app) currently share a tag with this quiz — used for the
-    // cross-lesson "harder" bias below, computed live instead of authored.
-    const sourceLessonIds = allLessons
+  const byId = new Map<string, RuntimeQuizQuestion>();
+  for (const quiz of applicableQuizzes) {
+    // Which of the trainee's known lessons this quiz spans — drives the cross-lesson bias.
+    const sourceLessonIds = knowledgeLessons
       .filter((l) => l.tags.some((tag) => quiz.tags.includes(tag)))
       .map((l) => l.id);
-    return quiz.questions.map((question) => ({ ...question, sourceLessonIds }));
-  });
+    for (const question of quiz.questions) {
+      if (!byId.has(question.id)) byId.set(question.id, { ...question, sourceLessonIds });
+    }
+  }
+  const candidates = [...byId.values()];
 
-  // Bias toward harder, cross-lesson questions: pull as many multi-lesson
-  // quiz questions as possible before topping up with single-lesson ones.
   const crossLesson = shuffle(candidates.filter((q) => q.sourceLessonIds.length > 1));
   const singleLesson = shuffle(candidates.filter((q) => q.sourceLessonIds.length <= 1));
-  const questionCount = Math.min(lesson.quizConfig.questionCount, candidates.length);
+
+  // 2 or 3 questions, chosen at random each attempt, capped by what's actually available.
+  const target = Math.random() < 0.5 ? 2 : 3;
+  const questionCount = Math.min(target, candidates.length);
   const picked = [...crossLesson, ...singleLesson].slice(0, questionCount);
 
   return shuffle(picked);

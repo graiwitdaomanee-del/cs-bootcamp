@@ -17,9 +17,6 @@ export interface Lesson {
   isPlaceholder: boolean;
   prerequisiteLessonId: string | null;
   steps: LessonStep[];
-  quizConfig: {
-    questionCount: number;
-  };
   xpReward: number;
   estimatedMinutes: number;
   createdAt: string;

@@ -66,7 +66,6 @@ export const seedLessons: Lesson[] = [
     estimatedMinutes: 10,
     createdAt: SEED_TIMESTAMP,
     updatedAt: SEED_TIMESTAMP,
-    quizConfig: { questionCount: 5 },
     steps: [
       {
         id: 'mo1-s1',
@@ -164,7 +163,6 @@ export const seedLessons: Lesson[] = [
     estimatedMinutes: 11,
     createdAt: SEED_TIMESTAMP,
     updatedAt: SEED_TIMESTAMP,
-    quizConfig: { questionCount: 5 },
     steps: [
       {
         id: 'mo2-s1',
@@ -265,7 +263,6 @@ export const seedLessons: Lesson[] = [
     estimatedMinutes: 13,
     createdAt: SEED_TIMESTAMP,
     updatedAt: SEED_TIMESTAMP,
-    quizConfig: { questionCount: 6 },
     steps: [
       {
         id: 'mo3-s1',
@@ -397,7 +394,6 @@ export const seedLessons: Lesson[] = [
     estimatedMinutes: 12,
     createdAt: SEED_TIMESTAMP,
     updatedAt: SEED_TIMESTAMP,
-    quizConfig: { questionCount: 5 },
     steps: [
       {
         id: 'mo4-s1',
@@ -503,7 +499,6 @@ export const seedLessons: Lesson[] = [
     estimatedMinutes: 13,
     createdAt: SEED_TIMESTAMP,
     updatedAt: SEED_TIMESTAMP,
-    quizConfig: { questionCount: 6 },
     steps: [
       {
         id: 'mo5-s1',
@@ -618,7 +613,6 @@ export const seedLessons: Lesson[] = [
     estimatedMinutes: 12,
     createdAt: SEED_TIMESTAMP,
     updatedAt: SEED_TIMESTAMP,
-    quizConfig: { questionCount: 6 },
     steps: [
       {
         id: 'mo6-s1',
@@ -749,7 +743,6 @@ export const seedLessons: Lesson[] = [
     estimatedMinutes: 15,
     createdAt: SEED_TIMESTAMP,
     updatedAt: SEED_TIMESTAMP,
-    quizConfig: { questionCount: 6 },
     steps: [
       {
         id: 'mo7-s1',
@@ -889,7 +882,6 @@ export const seedLessons: Lesson[] = [
     estimatedMinutes: 10,
     createdAt: SEED_TIMESTAMP,
     updatedAt: SEED_TIMESTAMP,
-    quizConfig: { questionCount: 5 },
     steps: [
       {
         id: 'wp1-s1',
@@ -988,7 +980,6 @@ export const seedLessons: Lesson[] = [
     estimatedMinutes: 12,
     createdAt: SEED_TIMESTAMP,
     updatedAt: SEED_TIMESTAMP,
-    quizConfig: { questionCount: 5 },
     steps: [
       {
         id: 'wp2-s1',
@@ -1096,7 +1087,6 @@ export const seedLessons: Lesson[] = [
     estimatedMinutes: 13,
     createdAt: SEED_TIMESTAMP,
     updatedAt: SEED_TIMESTAMP,
-    quizConfig: { questionCount: 6 },
     steps: [
       {
         id: 'wp3-s1',
@@ -1210,7 +1200,6 @@ export const seedLessons: Lesson[] = [
     estimatedMinutes: 13,
     createdAt: SEED_TIMESTAMP,
     updatedAt: SEED_TIMESTAMP,
-    quizConfig: { questionCount: 6 },
     steps: [
       {
         id: 'wp4-s1',
@@ -1354,7 +1343,6 @@ export const seedLessons: Lesson[] = [
     estimatedMinutes: 11,
     createdAt: SEED_TIMESTAMP,
     updatedAt: SEED_TIMESTAMP,
-    quizConfig: { questionCount: 5 },
     steps: [
       {
         id: 'wp5-s1',
@@ -1456,7 +1444,6 @@ export const seedLessons: Lesson[] = [
     estimatedMinutes: 13,
     createdAt: SEED_TIMESTAMP,
     updatedAt: SEED_TIMESTAMP,
-    quizConfig: { questionCount: 5 },
     steps: [
       {
         id: 'wp6-s1',
@@ -1558,7 +1545,6 @@ export const seedLessons: Lesson[] = [
     estimatedMinutes: 13,
     createdAt: SEED_TIMESTAMP,
     updatedAt: SEED_TIMESTAMP,
-    quizConfig: { questionCount: 5 },
     steps: [
       {
         id: 'wp7-s1',
@@ -1664,7 +1650,6 @@ export const seedLessons: Lesson[] = [
     estimatedMinutes: 10,
     createdAt: SEED_TIMESTAMP,
     updatedAt: SEED_TIMESTAMP,
-    quizConfig: { questionCount: 5 },
     steps: [
       {
         id: 'fs1-s1',
@@ -1763,7 +1748,6 @@ export const seedLessons: Lesson[] = [
     estimatedMinutes: 12,
     createdAt: SEED_TIMESTAMP,
     updatedAt: SEED_TIMESTAMP,
-    quizConfig: { questionCount: 6 },
     steps: [
       {
         id: 'fs2-s1',
@@ -1877,7 +1861,6 @@ export const seedLessons: Lesson[] = [
     estimatedMinutes: 14,
     createdAt: SEED_TIMESTAMP,
     updatedAt: SEED_TIMESTAMP,
-    quizConfig: { questionCount: 6 },
     steps: [
       {
         id: 'fs3-s1',
@@ -2007,7 +1990,6 @@ export const seedLessons: Lesson[] = [
     estimatedMinutes: 12,
     createdAt: SEED_TIMESTAMP,
     updatedAt: SEED_TIMESTAMP,
-    quizConfig: { questionCount: 5 },
     steps: [
       {
         id: 'fs4-s1',
@@ -2109,7 +2091,6 @@ export const seedLessons: Lesson[] = [
     estimatedMinutes: 14,
     createdAt: SEED_TIMESTAMP,
     updatedAt: SEED_TIMESTAMP,
-    quizConfig: { questionCount: 6 },
     steps: [
       {
         id: 'fs5-s1',
@@ -2229,7 +2210,6 @@ export const seedLessons: Lesson[] = [
     estimatedMinutes: 12,
     createdAt: SEED_TIMESTAMP,
     updatedAt: SEED_TIMESTAMP,
-    quizConfig: { questionCount: 5 },
     steps: [
       {
         id: 'fs6-s1',
@@ -2347,7 +2327,6 @@ export const seedLessons: Lesson[] = [
     estimatedMinutes: 16,
     createdAt: SEED_TIMESTAMP,
     updatedAt: SEED_TIMESTAMP,
-    quizConfig: { questionCount: 6 },
     steps: [
       {
         id: 'fs7-s1',

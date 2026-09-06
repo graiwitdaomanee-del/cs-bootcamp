@@ -35,7 +35,6 @@ function emptyLessonInput(order: number, courseId: string): LessonInput {
     isPlaceholder: false,
     prerequisiteLessonId: null,
     steps: [createDefaultStep('info', 1)],
-    quizConfig: { questionCount: 5 },
     xpReward: 100,
     estimatedMinutes: 10,
   };
@@ -70,7 +69,6 @@ export function LessonEditorPage() {
           isPlaceholder: lesson.isPlaceholder,
           prerequisiteLessonId: lesson.prerequisiteLessonId,
           steps: lesson.steps,
-          quizConfig: lesson.quizConfig,
           xpReward: lesson.xpReward,
           estimatedMinutes: lesson.estimatedMinutes,
         }
@@ -295,27 +293,15 @@ export function LessonEditorPage() {
 
           <section className="rounded-xl border border-surface-variant bg-surface-white p-6">
             <h2 className="mb-4 font-mono text-sm font-semibold uppercase tracking-wider text-secondary">
-              เงื่อนไขแบบทดสอบท้ายบท
+              แบบทดสอบท้ายบท
             </h2>
-            <div className="mb-3 flex items-center gap-2">
-              <label className="text-xs text-secondary">จำนวนคำถาม</label>
-              <input
-                type="number"
-                className="w-20 rounded-lg border border-outline-variant bg-surface-white px-2 py-1 text-sm text-on-surface"
-                value={form.quizConfig.questionCount}
-                onChange={(e) =>
-                  setForm({
-                    ...form,
-                    quizConfig: { ...form.quizConfig, questionCount: Number(e.target.value) },
-                  })
-                }
-              />
-            </div>
-            <p className="text-xs text-secondary">
-              ตัวคำถามที่จะสุ่มใช้มาจากแบบทดสอบ (Quiz) ที่ถูกกำหนดให้ปรากฏหลังบทเรียนนี้ —{' '}
+            <p className="text-xs leading-relaxed text-secondary">
+              หลังจบบทเรียนนี้ ระบบจะสุ่ม <span className="font-semibold text-on-surface">2–3 คำถามใหม่ทุกครั้ง</span>{' '}
+              จากแบบทดสอบที่มีแท็กตรงกับบทนี้ หรือบทเรียนที่ trainee คนนั้น{' '}
+              <span className="font-semibold text-on-surface">ผ่านมาแล้ว</span> โดยเน้นคำถามที่รวมความรู้หลายบท ต้องตอบถูกทุกข้อจึงจะผ่าน —{' '}
               {lesson ? (
                 <Link to={`/admin/quizzes?lessonId=${lesson.id}`} className="text-success-green hover:underline">
-                  จัดการแบบทดสอบที่ปรากฏหลังบทเรียนนี้
+                  จัดการแบบทดสอบที่จับคู่กับบทเรียนนี้
                 </Link>
               ) : (
                 'บันทึกบทเรียนนี้ก่อน แล้วไปกำหนดแบบทดสอบได้ที่หน้าคลังแบบทดสอบ'

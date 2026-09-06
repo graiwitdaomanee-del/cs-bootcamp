@@ -8,7 +8,8 @@ import { Badge } from '../common/Badge';
 import { Icon } from '../common/Icon';
 import { QuizRunner } from './QuizRunner';
 
-const PASS_THRESHOLD = 0.7;
+/** Small random quizzes — passing means every gradeable question is correct. */
+const PASS_THRESHOLD = 1;
 
 export function QuizGate({
   lesson,
@@ -24,8 +25,14 @@ export function QuizGate({
   const userProgress = useAppStore((s) => s.progress[userId]);
   const submitQuizAttempt = useAppStore((s) => s.submitQuizAttempt);
 
+  // The trainee's unlocked-knowledge set: lessons they have already passed (plus the one
+  // just finished, added inside buildQuizForLesson). Not shown to the trainee.
+  const completedLessons = allLessons.filter(
+    (l) => userProgress?.lessons[l.id]?.status === 'completed',
+  );
+
   const [questions, setQuestions] = useState<RuntimeQuizQuestion[]>(() =>
-    buildQuizForLesson(lesson, quizzes, allLessons),
+    buildQuizForLesson(lesson, quizzes, completedLessons),
   );
   const [attemptKey, setAttemptKey] = useState(0);
   const [result, setResult] = useState<{ score: number; passed: boolean } | null>(null);
@@ -50,7 +57,7 @@ export function QuizGate({
   }
 
   function handleRetry() {
-    setQuestions(buildQuizForLesson(lesson, quizzes, allLessons));
+    setQuestions(buildQuizForLesson(lesson, quizzes, completedLessons));
     setAttemptKey((k) => k + 1);
     setResult(null);
   }
@@ -75,7 +82,7 @@ export function QuizGate({
               <h2 className="font-display text-lg font-bold text-on-surface">แบบทดสอบสวมบทบาท (Role Play Quiz)</h2>
             </div>
             <p className="font-sans text-sm text-secondary">
-              คำถามยากขึ้น ผสมความรู้จากหลายบทเรียนที่คุณเรียนมาจนถึงตอนนี้ ทำคะแนนให้ได้ {Math.round(PASS_THRESHOLD * 100)}%+ เพื่อผ่านบทเรียนนี้
+              ชุดคำถามสุ่ม 2–3 ข้อ ผสมความรู้จากบทเรียนที่คุณผ่านมาจนถึงตอนนี้ — ต้องตอบถูกทุกข้อเพื่อผ่านบทเรียนนี้ (ลองใหม่ได้ไม่จำกัด ชุดคำถามจะเปลี่ยนทุกครั้ง)
             </p>
           </div>
           <div
@@ -88,9 +95,7 @@ export function QuizGate({
                 คะแนน {Math.round(result.score * 100)}%
               </Badge>
               <span className="font-sans text-sm font-semibold text-on-surface">
-                {result.passed
-                  ? 'คุณผ่านแล้ว!'
-                  : `ต้องได้ ${Math.round(PASS_THRESHOLD * 100)}% ขึ้นไปจึงจะผ่าน — ลองอีกครั้ง`}
+                {result.passed ? 'คุณผ่านแล้ว!' : 'ต้องตอบถูกทุกข้อจึงจะผ่าน — ลองอีกครั้ง'}
               </span>
             </div>
             {result.passed ? (
