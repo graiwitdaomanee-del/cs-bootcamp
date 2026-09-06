@@ -10,8 +10,10 @@ import { Button } from '../components/common/Button';
 import { StepEditor, createDefaultStep } from '../components/dashboard/StepEditor';
 import { AddBlockPalette } from '../components/dashboard/AddBlockPalette';
 import { TagInput } from '../components/dashboard/TagInput';
+import { EditorIssuesPanel } from '../components/dashboard/EditorIssuesPanel';
 import { Icon } from '../components/common/Icon';
 import { useDragReorder } from '../hooks/useDragReorder';
+import { getStepIssues } from '../utils/stepValidation';
 
 const QUIZ_QUESTION_TYPES: StepType[] = [
   'single-choice',
@@ -56,6 +58,11 @@ export function QuizEditorPage() {
         }
       : emptyQuizInput(initialLesson?.tags ?? []),
   );
+  const [saveErrors, setSaveErrors] = useState<string[]>([]);
+
+  const { dragHandleProps, dropZoneProps } = useDragReorder(form.questions, (next: QuizQuestion[]) =>
+    setForm((f) => ({ ...f, questions: next.map((q, i) => ({ ...q, order: i + 1 })) })),
+  );
 
   if (!account || account.role !== 'admin') return <Navigate to="/" replace />;
   if (quizId && !quiz) return <Navigate to="/admin/quizzes" replace />;
@@ -87,21 +94,21 @@ export function QuizEditorPage() {
     });
   }
 
-  function reorderQuestions(next: QuizQuestion[]) {
-    setForm((f) => ({ ...f, questions: next.map((q, i) => ({ ...q, order: i + 1 })) }));
-  }
-
-  const { dragHandleProps, dropZoneProps } = useDragReorder(form.questions, reorderQuestions);
-
   function handleSave() {
-    if (!form.title.trim()) {
-      alert('กรุณากรอกชื่อแบบทดสอบ');
-      return;
-    }
+    const errs: string[] = [];
+    if (!form.title.trim()) errs.push('ยังไม่ได้กรอกชื่อแบบทดสอบ');
     if (form.tags.length === 0) {
-      alert('กรุณาเพิ่มอย่างน้อย 1 แท็กเพื่อให้แบบทดสอบนี้จับคู่กับบทเรียนได้');
+      errs.push('ต้องมีอย่างน้อย 1 แท็ก เพื่อให้แบบทดสอบนี้จับคู่กับบทเรียนได้');
+    }
+    form.questions.forEach((question, i) => {
+      getStepIssues(question).forEach((issue) => errs.push(`คำถามที่ ${i + 1}: ${issue}`));
+    });
+    if (errs.length > 0) {
+      setSaveErrors(errs);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
       return;
     }
+    setSaveErrors([]);
     if (quiz) {
       updateQuiz(quiz.id, form);
     } else {
@@ -130,6 +137,8 @@ export function QuizEditorPage() {
             <Button onClick={handleSave}>บันทึกแบบทดสอบ</Button>
           </div>
         </div>
+
+        <EditorIssuesPanel errors={saveErrors} onDismiss={() => setSaveErrors([])} className="mb-6" />
 
         <div className="space-y-6">
           <section className="rounded-xl border border-surface-variant bg-surface-white p-6">

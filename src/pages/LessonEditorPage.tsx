@@ -11,7 +11,9 @@ import { StepEditor, createDefaultStep } from '../components/dashboard/StepEdito
 import { AddBlockPalette } from '../components/dashboard/AddBlockPalette';
 import { TagInput } from '../components/dashboard/TagInput';
 import { PageBreadcrumb } from '../components/common/PageBreadcrumb';
+import { EditorIssuesPanel } from '../components/dashboard/EditorIssuesPanel';
 import { useDragReorder } from '../hooks/useDragReorder';
+import { getStepIssues } from '../utils/stepValidation';
 
 const DIFFICULTY_LABELS: Record<LessonDifficulty, string> = {
   easy: 'ง่าย',
@@ -74,6 +76,11 @@ export function LessonEditorPage() {
         }
       : emptyLessonInput(allLessons.length + 1, initialCourseId ?? courses[0]?.id ?? ''),
   );
+  const [saveErrors, setSaveErrors] = useState<string[]>([]);
+
+  const { dragHandleProps, dropZoneProps } = useDragReorder(form.steps, (next: LessonStep[]) =>
+    setForm((f) => ({ ...f, steps: next.map((s, i) => ({ ...s, order: i + 1 })) })),
+  );
 
   if (!account || account.role !== 'admin') return <Navigate to="/" replace />;
   if (lessonId && !lesson) return <Navigate to="/" replace />;
@@ -90,12 +97,6 @@ export function LessonEditorPage() {
     setForm((f) => ({ ...f, steps: [...f.steps, createDefaultStep(type, f.steps.length + 1)] }));
   }
 
-  function reorderSteps(next: LessonStep[]) {
-    setForm((f) => ({ ...f, steps: next.map((s, i) => ({ ...s, order: i + 1 })) }));
-  }
-
-  const { dragHandleProps, dropZoneProps } = useDragReorder(form.steps, reorderSteps);
-
   function moveStep(index: number, dir: -1 | 1) {
     setForm((f) => {
       const next = [...f.steps];
@@ -107,14 +108,18 @@ export function LessonEditorPage() {
   }
 
   function handleSave() {
-    if (!form.title.trim()) {
-      alert('กรุณากรอกชื่อบทเรียน');
+    const errs: string[] = [];
+    if (!form.title.trim()) errs.push('ยังไม่ได้กรอกชื่อบทเรียน');
+    if (!form.courseId) errs.push('ยังไม่ได้เลือกคอร์ส');
+    form.steps.forEach((step, i) => {
+      getStepIssues(step).forEach((issue) => errs.push(`ขั้นตอนที่ ${i + 1}: ${issue}`));
+    });
+    if (errs.length > 0) {
+      setSaveErrors(errs);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
       return;
     }
-    if (!form.courseId) {
-      alert('กรุณาเลือกคอร์ส');
-      return;
-    }
+    setSaveErrors([]);
     const slug = form.slug.trim() || form.title.toLowerCase().replace(/[^a-z0-9]+/g, '-');
     const cleaned: LessonInput = { ...form, slug };
     if (lesson) {
@@ -148,6 +153,12 @@ export function LessonEditorPage() {
             <Button onClick={handleSave}>บันทึกบทเรียน</Button>
           </div>
         </div>
+
+        <EditorIssuesPanel
+          errors={saveErrors}
+          onDismiss={() => setSaveErrors([])}
+          className="mb-6"
+        />
 
         <div className="space-y-6">
           <section className="rounded-xl border border-surface-variant bg-surface-white p-6">

@@ -1,15 +1,16 @@
 import type { StepType } from '../../types/step';
 import { Icon } from '../common/Icon';
-import { STEP_TYPE_ICONS, STEP_TYPE_LABELS } from './StepEditor';
+import { STEP_TYPE_ICONS } from './StepEditor';
 
-const BLOCK_DESCRIPTIONS: Record<StepType, string> = {
-  info: 'เนื้อหาข้อความ/สื่อ',
-  'free-text': 'ให้พิมพ์คำตอบ',
+/** Short, plain-language names for the "add" buttons (no English parenthetical). */
+const ADD_LABELS: Record<StepType, string> = {
+  info: 'เนื้อหา / ข้อมูล',
+  'free-text': 'พิมพ์คำตอบ',
   'single-choice': 'เลือกคำตอบเดียว',
   'multi-choice': 'เลือกได้หลายคำตอบ',
-  'salesforce-mock-timed': 'จำลองหน้าจอ Salesforce',
-  'live-chat-mock': 'จำลองแชทแบบโต้ตอบ',
-  'phone-call-mock': 'จำลองสายโทรเข้า (อัดเสียงตอบ)',
+  'live-chat-mock': 'จำลอง Live Chat',
+  'salesforce-mock-timed': 'จำลอง Salesforce (จับเวลา)',
+  'phone-call-mock': 'จำลองสายโทรเข้า',
 };
 
 const ALL_TYPES: StepType[] = [
@@ -37,17 +38,12 @@ export function AddBlockPalette({
         <button
           key={type}
           onClick={() => onAdd(type)}
-          className="flex items-center gap-2 rounded-lg border border-outline-variant p-2.5 text-left transition-all hover:border-success-green hover:bg-success-green/5"
+          className="flex items-center gap-2 rounded-lg border border-outline-variant px-2.5 py-2 text-left transition-all hover:border-success-green hover:bg-success-green/5"
         >
-          <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded bg-surface-container-low text-secondary">
-            <Icon name={STEP_TYPE_ICONS[type]} className="text-[18px]" />
+          <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded bg-surface-container-low text-secondary">
+            <Icon name={STEP_TYPE_ICONS[type]} className="text-[16px]" />
           </span>
-          <span className="min-w-0">
-            <span className="block truncate font-sans text-xs font-semibold text-on-surface">
-              {STEP_TYPE_LABELS[type]}
-            </span>
-            <span className="block truncate font-mono text-[10px] text-secondary">{BLOCK_DESCRIPTIONS[type]}</span>
-          </span>
+          <span className="truncate font-sans text-xs font-semibold text-on-surface">{ADD_LABELS[type]}</span>
         </button>
       ))}
     </div>

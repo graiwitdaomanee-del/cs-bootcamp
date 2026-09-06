@@ -81,12 +81,17 @@ export function BlockEditor({
               onChange={(e) => updateBlock(index, { ...block, text: e.target.value })}
             />
           ) : (
-            <input
-              className="w-full rounded-lg border border-outline-variant bg-surface-white px-3 py-2 text-sm text-on-surface"
-              placeholder={block.type === 'image' ? 'คำอธิบายรูปภาพ (ตัวอย่างสาธิต)' : 'คำอธิบายวิดีโอ (ตัวอย่างสาธิต)'}
-              value={block.caption}
-              onChange={(e) => updateBlock(index, { ...block, caption: e.target.value })}
-            />
+            <>
+              <input
+                className="w-full rounded-lg border border-outline-variant bg-surface-white px-3 py-2 text-sm text-on-surface"
+                placeholder={block.type === 'image' ? 'คำบรรยายรูปภาพ' : 'คำบรรยายวิดีโอ'}
+                value={block.caption}
+                onChange={(e) => updateBlock(index, { ...block, caption: e.target.value })}
+              />
+              <p className="mt-1 font-sans text-[11px] text-secondary">
+                ระบบนี้ไม่ได้อัปโหลดไฟล์จริง — ใส่คำบรรยายว่าภาพ/วิดีโอนี้แสดงอะไร
+              </p>
+            </>
           )}
         </div>
       ))}

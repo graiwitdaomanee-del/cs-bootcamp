@@ -175,7 +175,8 @@ The bottom-left panel of the lesson player and quiz runner is a two-tab panel:
 ### 6.7 Admin — authoring
 - **FR-34** Courses: create, edit (slug, title, short name, description, emoji icon, logo image, status, order), delete. Deleting a course also deletes its lessons.
 - **FR-35** Lessons: create, edit every field (title, slug, summary, description blocks, tags, difficulty, hidden flag, placeholder flag, prerequisite, steps, quiz question count, XP reward, estimated minutes), delete. `createdAt`/`updatedAt` maintained automatically.
-- **FR-36** Steps: add/edit/remove any step type via type-specific editors; edit choice options and correct answers inline.
+- **FR-36** Steps: add/edit/remove any step type via type-specific editors, laid out as labeled field groups (โจทย์ / ตัวเลือกคำตอบ / สิ่งที่แสดงหลังตอบ / สื่อประกอบ / จับเวลา); edit choice options and correct answers inline. Changing a step's type is guarded by an inline confirm when the step already has content.
+- **FR-36a** Each step editor surfaces a "N จุดที่ต้องแก้" chip listing what makes the step incomplete (`getStepIssues` in `src/utils/stepValidation.ts`). On save, a lesson or quiz with any incomplete step is blocked by an inline error panel that lists every issue by step number — the editor never silently saves a broken step.
 - **FR-37** Quizzes: create, edit (title, tags, questions), toggle hidden, delete.
 - **FR-38** Knowledge Hub entries: create, edit, delete; choose the unlocking lesson.
 - **FR-39** Reordering: drag-and-drop for lessons and steps (splice-based; the dragged item is removed and reinserted at the drop position).
