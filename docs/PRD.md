@@ -154,10 +154,20 @@ auto-submits on expiry).
 - **FR-29** On fail: append a `QuizAttemptRecord` (not passed), lesson stays `in-progress`, offer a retry that rebuilds a fresh question set. No attempt limit.
 - **FR-30** Every attempt records the question IDs shown, the answers given, the score, and the pass/fail result.
 
-### 6.6 Knowledge Hub
-- **FR-31** Each entry has a title, body, tags, and `unlockedByLessonId`.
+### 6.6 Knowledge Hub & AI tutor
+
+The bottom-left panel of the lesson player and quiz runner is a two-tab panel:
+**คลังความรู้ (Knowledge Hub)** and **AI ติวเตอร์ (AI tutor)**.
+
+- **FR-31** Each Knowledge Hub entry has a title, body, tags, and `unlockedByLessonId`.
 - **FR-32** An entry is unlocked once its lesson is `in-progress` or `completed`.
 - **FR-33** Unlocked entries appear in the in-lesson/in-quiz panel and on a dedicated `/knowledge-hub` page with search.
+- **FR-33a** The AI tutor tab is a **mock** — a pure client-side coach with no network call, no API key, and no model. It never contacts an external service.
+- **FR-33b** The trainee types free text; the tutor compares it against the data the current step already carries (`sampleAnswerKeywords` / `sampleReplyKeywords` for free-text/chat/phone, the correct option(s) and `explanation` for choice, `idealCase` for the Salesforce mock) using substring + a small Thai paraphrase map.
+- **FR-33c** The tutor replies on an escalating hint ladder: (0) a Socratic opener plus acknowledgement of any key points already covered, (1) how many key points a strong answer has and which theme is still missing, (2) a pointed question at the biggest gap, with a callback to a completed lesson, (3+) a pointer to the best-matching unlocked Knowledge Hub entry. It **never prints the model answer**; once every key point is covered it says so and stops escalating.
+- **FR-33d** The tutor is aware of the trainee's full progress: completed lessons and unlocked Knowledge Hub entries feed the lesson callbacks and the entry it points to.
+- **FR-33e** The conversation lives in component state only — it persists across step navigation and tab switches within a session and resets on reload, like all other state (see FR-43). Hint level is tracked per step, so revisiting an earlier step does not over-escalate.
+- **FR-33f** The tutor tab is present during lesson steps, review mode, and the graded quiz. It never affects scoring, XP, or the quiz gate.
 
 ### 6.7 Admin — authoring
 - **FR-34** Courses: create, edit (slug, title, short name, description, emoji icon, logo image, status, order), delete. Deleting a course also deletes its lessons.
@@ -247,6 +257,10 @@ None. There is no tracking, logging, or metrics collection of any kind.
   a limitation to hide.
 - **Real grading** — keyword/LLM scoring for free-text, chat, and Salesforce answers so
   they can actually affect a quiz result.
+- **AI tutor backing** — the tutor (§6.6) is a mock today. Swapping the templated hint
+  ladder for a real model means a serverless proxy holding an API key (a static site
+  cannot), or a bring-your-own-key field, or authored per-step hint branches. Deferred:
+  none of those is zero-cost-and-zero-infra the way the current mock is.
 - **Attempt limits / cooldowns** — currently unlimited quiz retries.
 - **Streak logic** — `streakDays` is seeded and read but there is no daily job that
   increments or resets it during a session.

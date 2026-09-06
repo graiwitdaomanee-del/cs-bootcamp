@@ -7,7 +7,7 @@ import { getLessonStatus } from '../utils/lessonAccess';
 import { LessonLayout } from '../components/lesson/LessonLayout';
 import { LessonBreadcrumb } from '../components/lesson/LessonBreadcrumb';
 import { LessonStepContent } from '../components/lesson/LessonStepContent';
-import { KnowledgeHub } from '../components/lesson/KnowledgeHub';
+import { LessonSidePanel } from '../components/lesson/LessonSidePanel';
 import { AnswerPanel } from '../components/lesson/AnswerPanel';
 import { QuizGate } from '../components/lesson/QuizGate';
 import { LessonCompleteModal } from '../components/lesson/LessonCompleteModal';
@@ -138,7 +138,7 @@ export function LessonPage() {
               <LessonStepContent step={lesson.steps[reviewStepIndex]} />
             </div>
           }
-          bottomLeft={<KnowledgeHub userProgress={userProgress} />}
+          bottomLeft={<LessonSidePanel userProgress={userProgress} step={lesson.steps[reviewStepIndex]} />}
           right={
             <StepReviewPanel
               step={lesson.steps[reviewStepIndex]}
@@ -166,7 +166,7 @@ export function LessonPage() {
               <LessonStepContent step={lesson.steps[stepIndex]} />
             </div>
           }
-          bottomLeft={<KnowledgeHub userProgress={userProgress} />}
+          bottomLeft={<LessonSidePanel userProgress={userProgress} step={lesson.steps[stepIndex]} />}
           right={
             <AnswerPanel
               key={lesson.steps[stepIndex].id}

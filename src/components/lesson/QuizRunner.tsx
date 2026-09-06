@@ -7,7 +7,7 @@ import { Icon } from '../common/Icon';
 import { LessonLayout } from './LessonLayout';
 import { LessonBreadcrumb } from './LessonBreadcrumb';
 import { LessonStepContent } from './LessonStepContent';
-import { KnowledgeHub } from './KnowledgeHub';
+import { LessonSidePanel } from './LessonSidePanel';
 import { AnswerPanel } from './AnswerPanel';
 
 /** Renders a quiz question-by-question using the exact same layout as taking a lesson (incl. Knowledge Hub). */
@@ -68,7 +68,7 @@ export function QuizRunner({
           <LessonStepContent step={currentQuestion} />
         </div>
       }
-      bottomLeft={<KnowledgeHub userProgress={userProgress} />}
+      bottomLeft={<LessonSidePanel userProgress={userProgress} step={currentQuestion} />}
       right={<AnswerPanel key={currentQuestion.id} step={currentQuestion} onComplete={handleAnswer} />}
     />
   );
