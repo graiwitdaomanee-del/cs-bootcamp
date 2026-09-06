@@ -10,12 +10,13 @@ import { LessonStepContent } from '../components/lesson/LessonStepContent';
 import { LessonSidePanel } from '../components/lesson/LessonSidePanel';
 import { AnswerPanel } from '../components/lesson/AnswerPanel';
 import { QuizGate } from '../components/lesson/QuizGate';
+import { QuizIntroModal } from '../components/lesson/QuizIntroModal';
 import { LessonCompleteModal } from '../components/lesson/LessonCompleteModal';
 import { StepReviewPanel } from '../components/lesson/StepReviewPanel';
 import { ContentBlocks } from '../components/lesson/ContentBlocks';
 import { PageBreadcrumb } from '../components/common/PageBreadcrumb';
 
-type Stage = 'steps' | 'quiz' | 'complete' | 'review';
+type Stage = 'steps' | 'quiz-intro' | 'quiz' | 'complete' | 'review';
 
 export function LessonPage() {
   const { lessonId } = useParams<{ lessonId: string }>();
@@ -53,7 +54,7 @@ export function LessonPage() {
       const lp = userProgress.lessons[lesson.id];
       const resumeIndex = Math.min(lp?.currentStepIndex ?? 0, lesson.steps.length);
       setStepIndex(resumeIndex);
-      setStage(resumeIndex >= lesson.steps.length ? 'quiz' : 'steps');
+      setStage(resumeIndex >= lesson.steps.length ? 'quiz-intro' : 'steps');
     }
   }, [lesson, account, userProgress, startLesson]);
 
@@ -90,7 +91,7 @@ export function LessonPage() {
     submitStepAnswer(account!.id, lesson!.id, currentStep.id, answer);
     const nextIndex = stepIndex + 1;
     if (nextIndex >= lesson!.steps.length) {
-      setStage('quiz');
+      setStage('quiz-intro');
     } else {
       setStepIndex(nextIndex);
     }
@@ -122,6 +123,8 @@ export function LessonPage() {
           onGoToDashboard={() => navigate(`/course/${lesson.courseId}`)}
           onGoToNext={() => (nextLesson ? navigate(`/lesson/${nextLesson.id}`) : navigate(`/course/${lesson.courseId}`))}
         />
+      ) : stage === 'quiz-intro' ? (
+        <QuizIntroModal onStart={() => setStage('quiz')} />
       ) : stage === 'quiz' ? (
         <QuizGate lesson={lesson} userId={account.id} onPass={handleQuizPass} />
       ) : stage === 'review' ? (

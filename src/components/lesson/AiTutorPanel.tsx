@@ -80,7 +80,7 @@ function TurnBubble({ turn }: { turn: ChatTurn }) {
   return (
     <div className={`flex ${isTrainee ? 'justify-end' : 'justify-start'}`}>
       <div
-        className={`max-w-[85%] rounded-xl px-3 py-2 font-sans text-xs leading-relaxed ${
+        className={`max-w-[85%] rounded-xl px-3 py-2 font-sans text-xs leading-relaxed lg:max-w-xl ${
           isTrainee
             ? 'bg-success-green/10 text-on-surface'
             : 'bg-surface-container-low text-on-surface-variant'

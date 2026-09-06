@@ -85,7 +85,7 @@ monitors the cohort. Seeded account: Phin.
 3. Open a course → see its lessons as a roadmap with status (available / locked / in-progress / completed).
 4. Open an available lesson → the lesson player opens and the lesson is marked `in-progress`.
 5. Work through steps one at a time. Each step: read the prompt/scenario on the left, answer on the right, submit, see feedback (correct/incorrect + explanation, or a model answer to compare against). The Knowledge Hub panel shows reference entries unlocked by this and earlier lessons.
-6. After the last step, the **role-play quiz** loads: a fresh, shuffled set of questions drawn from every quiz that shares a tag with the lesson, biased toward harder cross-lesson questions.
+6. After the last step, a **heads-up modal** ("ทำครบทุกขั้นตอนแล้ว!") explains that a random 2–3 question role-play quiz comes next and must be passed in full; on "เริ่มทำแบบทดสอบ" the **role-play quiz** loads: a fresh, shuffled set of questions drawn from every quiz that shares a tag with the lesson, biased toward harder cross-lesson questions.
 7. Every question correct → lesson becomes `completed`, XP is awarded, a completion modal shows newly unlocked Knowledge Hub entries and a link to the next lesson.
 8. Any question wrong → retry with a brand-new random 2–3 question set. Unlimited attempts.
 9. Revisiting a completed lesson opens a **review** mode: step through past answers and the correct answers, with an option to retake the quiz.
@@ -123,9 +123,9 @@ monitors the cohort. Seeded account: Phin.
 ### 6.3 Trainee — lesson player
 - **FR-9** Opening an `available` lesson marks it `in-progress` and records `startedAt`.
 - **FR-10** Steps are presented one at a time in `order`. Progress through steps is tracked as `currentStepIndex`; re-opening an in-progress lesson resumes at that index.
-- **FR-11** Layout: lesson description + current step on the left, an answer panel on the right, the Knowledge Hub panel bottom-left.
+- **FR-11** Layout (desktop): a top band with the lesson description + current step on the left and the answer panel on the right, and the Knowledge Hub / AI tutor panel spanning the full width beneath them. On narrow screens the three stack: step, answer, then the panel.
 - **FR-12** Each answer is persisted as a `StepAnswerRecord` (answer value, correctness where applicable, timestamp). Re-answering a step replaces its prior record.
-- **FR-13** After the final step, the lesson enters the quiz stage (see 6.5).
+- **FR-13** After the final step, the lesson enters the quiz stage (see 6.5), which opens with a heads-up modal (FR-23a) before the graded questions.
 - **FR-14** A `completed` lesson opens in review mode: navigate any step, see the submitted answer beside the correct answer/model answer, and a "retake quiz" action.
 - **FR-15** Hidden lessons are not reachable by trainees (redirect home); admins may open them.
 - **FR-16** A lesson with an unmet prerequisite is `locked` and not openable (redirect home).
@@ -144,6 +144,7 @@ auto-submits on expiry).
 - **FR-23** `salesforce-mock-timed` — a scenario, a set of mock merchant accounts, and priority/case-type option lists; trainee picks account + priority + case type and writes subject/description, typically against a countdown; on submit compare against the `idealCase`. Not auto-graded.
 
 ### 6.5 Quiz gate
+- **FR-23a** The quiz stage opens with a heads-up modal (`QuizIntroModal`, styled like `LessonCompleteModal`): "ทำครบทุกขั้นตอนแล้ว!" + a note that a random 2–3 question role-play quiz follows and every question must be correct to pass. A single "เริ่มทำแบบทดสอบ" action advances to the questions. Shown when the trainee finishes the last step, and again if they reload while parked at the quiz stage; **not** shown for a retake launched from review mode (FR-14), which goes straight to a fresh question set.
 - **FR-24** The quiz for a lesson is assembled at runtime by `buildQuizForLesson(lesson, quizzes, completedLessons)`:
   - `completedLessons` = every lesson **this trainee has passed** (derived from progress, never shown to the trainee). The "knowledge set" for the draw is those lessons plus the one just finished.
   - Consider every non-hidden quiz whose `tags` intersect any tag in that knowledge set.
