@@ -4,7 +4,14 @@ import type { UserProgress } from '../../types/progress';
 import type { ChatTurn } from '../../types/tutor';
 import { useAppStore } from '../../store/useAppStore';
 import { isKnowledgeHubEntryUnlocked } from '../../utils/lessonAccess';
-import { buildTutorReply, TUTOR_INTRO, TUTOR_INTRO_SHORT } from '../../utils/tutorEngine';
+import {
+  buildTutorReply,
+  demoExamples,
+  extractKeyPoints,
+  matchKeyPoints,
+  TUTOR_INTRO,
+  TUTOR_INTRO_SHORT,
+} from '../../utils/tutorEngine';
 import { id as makeId } from '../../utils/id';
 import { Icon } from '../common/Icon';
 import { KnowledgeHub } from './KnowledgeHub';
@@ -70,6 +77,15 @@ export function LessonSidePanel({ userProgress, step }: { userProgress: UserProg
     [lessons, userProgress],
   );
 
+  // Demo-walkthrough hint: this step's key points + which of them the conversation has covered.
+  const stepKeyPoints = useMemo(() => extractKeyPoints(step), [step]);
+  const stepExamples = useMemo(() => demoExamples(step), [step]);
+  const coveredTerms = useMemo(() => {
+    const transcript = transcriptByStep[step.id] ?? '';
+    if (!transcript) return new Set<string>();
+    return new Set(matchKeyPoints(transcript, stepKeyPoints).hit.map((k) => k.term));
+  }, [transcriptByStep, step.id, stepKeyPoints]);
+
   // On first mount and on every step change, drop a divider + a short tutor greeting.
   useEffect(() => {
     if (seenStepRef.current === step.id) return;
@@ -130,7 +146,15 @@ export function LessonSidePanel({ userProgress, step }: { userProgress: UserProg
         <KnowledgeHub userProgress={userProgress} />
       </div>
       <div className={tab === 'tutor' ? 'flex min-h-0 flex-1 flex-col' : 'hidden'}>
-        <AiTutorPanel turns={turns} isTyping={isTyping} active={tab === 'tutor'} onSend={handleSend} />
+        <AiTutorPanel
+          turns={turns}
+          isTyping={isTyping}
+          active={tab === 'tutor'}
+          keyPoints={stepKeyPoints}
+          coveredTerms={coveredTerms}
+          examples={stepExamples}
+          onSend={handleSend}
+        />
       </div>
     </div>
   );

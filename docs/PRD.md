@@ -73,7 +73,7 @@ each with a different amount of prior progress so the cohort view looks realisti
 ### Admin / Training lead (`role: 'admin'`)
 Owns the curriculum. Authors courses and lessons, builds the quiz question pool, writes
 knowledge-base entries, hides work-in-progress content, reorders everything by drag, and
-monitors the cohort. Seeded account: Nueng.
+monitors the cohort. Seeded account: Phin.
 
 ## 5. Key user journeys
 
@@ -89,7 +89,7 @@ monitors the cohort. Seeded account: Nueng.
 9. Revisiting a completed lesson opens a **review** mode: step through past answers and the correct answers, with an option to retake the quiz.
 
 ### 5.2 Admin authors and publishes a lesson
-1. Log in as Nueng → admin dashboard (authoring tools + cohort table).
+1. Log in as Phin → admin dashboard (authoring tools + cohort table).
 2. Create or open a course; optionally upload a logo image and set status `active`/`wip`.
 3. Add a lesson: title, summary, description blocks, tags, difficulty, XP reward, estimated minutes, prerequisite lesson, quiz question count.
 4. Add steps of any supported type; for choice steps, edit options and mark the correct one(s); optionally attach a media placeholder and a per-step countdown.
@@ -168,6 +168,7 @@ The bottom-left panel of the lesson player and quiz runner is a two-tab panel:
 - **FR-33d** The tutor is aware of the trainee's full progress: completed lessons and unlocked Knowledge Hub entries feed the lesson callbacks and the entry it points to.
 - **FR-33e** The conversation lives in component state only — it persists across step navigation and tab switches within a session and resets on reload, like all other state (see FR-43). Hint level is tracked per step, so revisiting an earlier step does not over-escalate.
 - **FR-33f** The tutor tab is present during lesson steps, review mode, and the graded quiz. It never affects scoring, XP, or the quiz gate.
+- **FR-33g** A **สำหรับผู้สาธิต (เดโม)** disclosure at the top of the tutor tab supports demo walkthroughs of the keyword-matched mock: it lists the current step's key points as chips that tick green as the conversation covers them, plus up to two example sentences to type (one per key-point category; a generic prompt for choice/info steps). Always visible — the whole app is a self-contained demo.
 
 ### 6.7 Admin — authoring
 - **FR-34** Courses: create, edit (slug, title, short name, description, emoji icon, logo image, status, order), delete. Deleting a course also deletes its lessons.
@@ -233,7 +234,7 @@ AppData        version, accounts[], courses[], lessons[], knowledgeHubEntries[],
 - **NFR-4 Responsive** — usable from narrow mobile widths up to desktop; the app shell reflows nav and header controls.
 - **NFR-5 Type safety** — TypeScript strict; `npm run build` type-checks before bundling. `npm run lint` runs oxlint.
 - **NFR-6 Client performance** — single JS bundle (~575 kB / ~145 kB gzipped at time of writing); acceptable for an internal training tool, no code-splitting yet.
-- **NFR-7 Statelessness** — no PII is stored or transmitted; seed accounts use placeholder `@lmwn.com` addresses.
+- **NFR-7 Statelessness** — no PII is stored or transmitted; seed accounts use placeholder addresses: the trainer at `@lmwn.com` (e.g. `phin@lmwn.com`), trainees at `@ext-lmwn.com` (e.g. `ploy@ext-lmwn.com`) to reflect their external-hire status.
 
 ## 10. Deployment & environments
 
