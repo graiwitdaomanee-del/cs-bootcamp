@@ -13,12 +13,14 @@
 ## 1. Summary
 
 LMWN CS Bootcamp is an interactive onboarding simulator for LINE MAN Wongnai (LMWN)
-Customer Support agents. New hires work through short, scenario-driven lessons —
-answering multiple-choice questions, rewriting blunt replies, handling mock live-chat
-and phone conversations, and logging a mock Salesforce case against a countdown — then
-must pass a role-play quiz assembled from a shared question pool before the next lesson
-unlocks. Training leads (admins) author all of that content in-app and watch a cohort
-progress dashboard.
+Customer Support agents who support merchants. New hires work through short,
+scenario-driven lessons across three courses — **Merchant Overview & WMA**, **Wongnai
+POS (Android)**, and **Wongnai POS IPAD & Inventory** — distilled from the CX training
+decks. Each lesson mixes info blocks, multiple-choice questions, free-text recall,
+mock live-chat and phone conversations with merchants, and a timed mock Salesforce case
+that routes a merchant request to the right team; the trainee must pass a role-play quiz
+assembled from a shared question pool before the next lesson unlocks. Training leads
+(admins) author all of that content in-app and watch a cohort progress dashboard.
 
 The entire product runs in the browser. There is no server, no login credentials, and
 no database; all state is seeded on load and resets on refresh. This keeps it trivially
@@ -26,16 +28,16 @@ deployable (static hosting) and safe to hand to anyone as a self-contained demo.
 
 ## 2. Problem & context
 
-CS agents at LMWN sit at the seam between two sides of the business — consumers ordering
-on LINE MAN and merchants (restaurants, cafés, salons, clinics) running on Wongnai POS,
-the Wongnai Merchant App (WMA), online ads, and card terminals. New agents need to learn
-**tone and judgement**, not just facts: how to open a reply to an angry merchant, how to
-triage two urgent chats, when to escalate a recurring payout error, how to file a
-correctly-prioritised Salesforce case under time pressure.
+CS agents who support LMWN merchants have to hold a lot of product knowledge — how the
+GP fee is calculated, which POS hardware and software package a merchant needs, how the
+inventory PR/PO/GR flow works — **and** the judgement to apply it: which team a request
+routes to and with what SLA, how to open a reply to a worried merchant, when a question
+is too deep for CS and must be escalated.
 
-Slide decks and shadowing don't rehearse those decisions. This tool turns the onboarding
-curriculum into graded, repeatable practice, and gives the training lead one place to
-author scenarios and see who is stuck.
+The three CX training decks (Merchant Overview 238 pp, Basic POS 124 pp, FoodStory POS &
+Inventory 187 pp) carry that knowledge but as ~550 slides. This tool turns them into
+graded, repeatable practice, and gives the training lead one place to author scenarios
+and see who is stuck.
 
 ## 3. Goals & non-goals
 
@@ -186,7 +188,7 @@ The bottom-left panel of the lesson player and quiz runner is a two-tab panel:
 ### 6.9 Data & persistence
 - **FR-43** All application state is a single in-memory store initialised from the seed builder. There is **no** persistence layer (no localStorage, no backend).
 - **FR-44** A page reload re-seeds everything. The in-app reset does the same on demand.
-- **FR-45** The seed provides 7 accounts (1 admin, 6 trainees), 5 courses, 12 lessons, a 23-quiz pool, 33 Knowledge Hub entries, and pre-populated progress for the 6 trainees spanning "brand new" to "most of the curriculum done, on a 12-day streak".
+- **FR-45** The seed provides 7 accounts (1 admin — Phin, 6 trainees), 3 courses, 21 lessons (7 per course), a 27-quiz pool (one per lesson + 6 cross-lesson quizzes on shared thematic tags), ~50 Knowledge Hub entries, and pre-populated progress for the 6 trainees spanning "brand new" to "into the POS course on a 12-day streak". The lesson/quiz content is distilled from the three CX training decks (`docs/superpowers/specs/2026-09-06-pos-curriculum-design.md` records the mapping).
 
 ## 7. Domain model
 
@@ -268,5 +270,9 @@ None. There is no tracking, logging, or metrics collection of any kind.
 - **Bundle size** — route-level code-splitting if the content model grows.
 - **Accessibility audit** — keyboard-only lesson flow, focus management on stage changes,
   screen-reader labels on the drag handles and countdown.
-- **Media** — swap captioned placeholders for real embedded video/screens.
+- **Media** — swap captioned placeholders for real embedded video/screens. The POS courses
+  in particular reference many screenshots that are currently captioned `image` blocks.
+- **Deck drift** — the seed content is a point-in-time distillation of the May 2026 decks.
+  Package prices, SLAs, and routing teams change; a periodic re-sync against the decks
+  (or a link from each lesson to its source slides) would keep it accurate.
 - **Localization** — extract Thai strings if a second market is ever in scope.

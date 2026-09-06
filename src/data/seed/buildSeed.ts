@@ -50,23 +50,26 @@ function inProgressLessonProgress(lessonId: string, currentStepIndex: number): L
 }
 
 export function buildSeedAppData(): AppData {
+  // Ploy — just started Course 1, two lessons done.
   const ployProgress: UserProgress = {
     userId: ACCOUNT_IDS.ploy,
-    xp: 220,
+    xp: 210,
     streakDays: 3,
     lastActiveAt: PAST_TIMESTAMP,
     lessons: {
-      [LESSON_IDS.welcome]: completedLessonProgress(LESSON_IDS.welcome, [
-        'q-welcome-1',
-        'q-welcome-2',
-        'q-welcome-3',
-        'q-welcome-4',
+      [LESSON_IDS.mo1]: completedLessonProgress(LESSON_IDS.mo1, [
+        'q-mo1-1',
+        'q-mo1-2',
+        'q-mo1-3',
+        'q-mo1-4',
+        'q-mo1-5',
       ]),
-      [LESSON_IDS.orderComplaint]: completedLessonProgress(LESSON_IDS.orderComplaint, [
-        'q-order-1',
-        'q-order-2',
-        'q-order-3',
-        'q-order-4',
+      [LESSON_IDS.mo2]: completedLessonProgress(LESSON_IDS.mo2, [
+        'q-mo2-1',
+        'q-mo2-2',
+        'q-mo2-3',
+        'q-mo2-4',
+        'q-mo2-5',
       ]),
     },
   };
@@ -74,71 +77,64 @@ export function buildSeedAppData(): AppData {
   const beamProgress: UserProgress = emptyUserProgress(ACCOUNT_IDS.beam);
   const adminProgress: UserProgress = emptyUserProgress(ACCOUNT_IDS.admin);
 
+  // Nan — steady through the first four lessons of Course 1.
   const nanProgress: UserProgress = {
     userId: ACCOUNT_IDS.nan,
-    xp: 640,
+    xp: 460,
     streakDays: 7,
     lastActiveAt: PAST_TIMESTAMP,
     lessons: {
-      [LESSON_IDS.welcome]: completedLessonProgress(LESSON_IDS.welcome, [
-        'q-welcome-1',
-        'q-welcome-2',
-        'q-welcome-3',
-        'q-welcome-4',
+      [LESSON_IDS.mo1]: completedLessonProgress(LESSON_IDS.mo1, ['q-mo1-1', 'q-mo1-2', 'q-mo1-3']),
+      [LESSON_IDS.mo2]: completedLessonProgress(LESSON_IDS.mo2, ['q-mo2-1', 'q-mo2-2', 'q-mo2-3']),
+      [LESSON_IDS.mo3]: completedLessonProgress(LESSON_IDS.mo3, [
+        'q-mo3-1',
+        'q-mo3-2',
+        'q-mo3-3',
+        'q-mo3-4',
       ]),
-      [LESSON_IDS.orderComplaint]: completedLessonProgress(LESSON_IDS.orderComplaint, [
-        'q-order-1',
-        'q-order-2',
-        'q-order-3',
-        'q-order-4',
-      ]),
-      [LESSON_IDS.menuSetup]: completedLessonProgress(LESSON_IDS.menuSetup, [
-        'q-menu-1',
-        'q-menu-2',
-        'q-menu-3',
-        'q-menu-4',
-      ]),
-      [LESSON_IDS.adsPayout]: completedLessonProgress(LESSON_IDS.adsPayout, [
-        'q-ads-1',
-        'q-ads-2',
-        'q-ads-3',
-        'q-ads-4',
+      [LESSON_IDS.mo4]: completedLessonProgress(LESSON_IDS.mo4, [
+        'q-mo4-1',
+        'q-mo4-2',
+        'q-mo4-3',
+        'q-mo4-4',
       ]),
     },
   };
 
+  // Ohm — brand new, mid-way through the first lesson.
   const ohmProgress: UserProgress = {
     userId: ACCOUNT_IDS.ohm,
-    xp: 20,
+    xp: 0,
     streakDays: 1,
     lastActiveAt: PAST_TIMESTAMP,
     lessons: {
-      [LESSON_IDS.welcome]: inProgressLessonProgress(LESSON_IDS.welcome, 1),
+      [LESSON_IDS.mo1]: inProgressLessonProgress(LESSON_IDS.mo1, 2),
     },
   };
 
+  // Fah — jumped straight into the POS course, one lesson done (with a retry).
   const fahProgress: UserProgress = {
     userId: ACCOUNT_IDS.fah,
     xp: 100,
     streakDays: 2,
     lastActiveAt: PAST_TIMESTAMP,
     lessons: {
-      [LESSON_IDS.salesforceCase]: {
-        lessonId: LESSON_IDS.salesforceCase,
+      [LESSON_IDS.wp1]: {
+        lessonId: LESSON_IDS.wp1,
         status: 'completed',
         currentStepIndex: 0,
         stepAnswers: [],
         quizAttempts: [
           {
             attemptedAt: PAST_TIMESTAMP,
-            questionIds: ['q-sf-1', 'q-sf-2', 'q-sf-3', 'q-sf-4', 'q-sf-5'],
+            questionIds: ['q-wp1-1', 'q-wp1-2', 'q-wp1-3', 'q-wp1-4', 'q-wp1-5'],
             answers: {},
             score: 0.4,
             passed: false,
           },
           {
             attemptedAt: PAST_TIMESTAMP,
-            questionIds: ['q-sf-1', 'q-sf-2', 'q-sf-3', 'q-sf-4', 'q-sf-5'],
+            questionIds: ['q-wp1-1', 'q-wp1-2', 'q-wp1-3', 'q-wp1-4', 'q-wp1-5'],
             answers: {},
             score: 0.8,
             passed: true,
@@ -150,30 +146,20 @@ export function buildSeedAppData(): AppData {
     },
   };
 
+  // Gap — the cohort's front-runner: through Course 1's first three lessons and
+  // into the POS course, on a 12-day streak.
   const gapProgress: UserProgress = {
     userId: ACCOUNT_IDS.gap,
-    xp: 480,
+    xp: 560,
     streakDays: 12,
     lastActiveAt: PAST_TIMESTAMP,
     lessons: {
-      [LESSON_IDS.liveChat]: completedLessonProgress(LESSON_IDS.liveChat, [
-        'q-chat-1',
-        'q-chat-2',
-        'q-chat-3',
-        'q-chat-4',
-      ]),
-      [LESSON_IDS.wmaAdvanced]: completedLessonProgress(LESSON_IDS.wmaAdvanced, [
-        'q-wmaadv-1',
-        'q-wmaadv-2',
-        'q-wmaadv-3',
-      ]),
-      [LESSON_IDS.posBasics]: completedLessonProgress(LESSON_IDS.posBasics, [
-        'q-pos-1',
-        'q-pos-2',
-        'q-pos-3',
-        'q-pos-4',
-      ]),
-      [LESSON_IDS.hardwareBasics]: inProgressLessonProgress(LESSON_IDS.hardwareBasics, 2),
+      [LESSON_IDS.mo1]: completedLessonProgress(LESSON_IDS.mo1, ['q-mo1-1', 'q-mo1-2', 'q-mo1-3']),
+      [LESSON_IDS.mo2]: completedLessonProgress(LESSON_IDS.mo2, ['q-mo2-1', 'q-mo2-2', 'q-mo2-3']),
+      [LESSON_IDS.mo3]: completedLessonProgress(LESSON_IDS.mo3, ['q-mo3-1', 'q-mo3-2', 'q-mo3-3']),
+      [LESSON_IDS.wp1]: completedLessonProgress(LESSON_IDS.wp1, ['q-wp1-1', 'q-wp1-2', 'q-wp1-3']),
+      [LESSON_IDS.wp2]: completedLessonProgress(LESSON_IDS.wp2, ['q-wp2-1', 'q-wp2-2', 'q-wp2-3']),
+      [LESSON_IDS.fs1]: inProgressLessonProgress(LESSON_IDS.fs1, 2),
     },
   };
 
